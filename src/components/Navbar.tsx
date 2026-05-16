@@ -17,6 +17,16 @@ export const Navbar = () => {
   const location = useLocation();
   const { totalItems, openCart } = useCart();
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    // If already on home, prevent default navigation and smoothly scroll to top
+    if (location.pathname === "/") {
+      e.preventDefault();
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
@@ -34,7 +44,7 @@ export const Navbar = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <Link to="/" className="font-serif text-2xl tracking-[0.3em] text-foreground">
+        <Link to="/" onClick={handleLogoClick} className="font-serif text-2xl tracking-[0.3em] text-foreground">
           VELOURA
         </Link>
 
