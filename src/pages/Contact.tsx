@@ -19,7 +19,7 @@ const Contact = () => {
       <section className="pt-40 pb-16 gradient-hero text-center">
         <div className="container max-w-3xl">
           <p className="text-xs uppercase tracking-[0.35em] text-rose-gold mb-6 animate-fade-up">Get in Touch</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[1] animate-fade-up text-balance">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-7xl leading-[1] animate-fade-up text-balance">
             We'd love to hear from you.
           </h1>
           <p className="mt-6 text-muted-foreground text-lg animate-fade-up">

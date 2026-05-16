@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: (query: string) => ({
+  value: (query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -13,3 +13,17 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+
+// Mock IntersectionObserver for jsdom
+class MockIntersectionObserver {
+  constructor(cb) {
+    this.cb = cb;
+  }
+  observe() {
+    this.cb([{ isIntersecting: true, target: { classList: { add: () => {} } } }]);
+  }
+  unobserve() {}
+  disconnect() {}
+}
+
+window.IntersectionObserver = MockIntersectionObserver;

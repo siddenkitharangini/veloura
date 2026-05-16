@@ -1,7 +1,7 @@
-import { Link, useParams } from "react-router-dom";
-import { getProduct, products } from "@/data/products";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { getProduct, products, type Product } from "@/data/products";
 import { ArrowLeft, Check, Star, Minus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
@@ -15,6 +15,7 @@ const reviews = [
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const product = getProduct(id ?? "");
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
@@ -27,18 +28,46 @@ const ProductDetail = () => {
     setZoom({ active: false, x: 50, y: 50 });
   }, [id]);
 
+  // Ensure the page always opens scrolled to top when the product changes
+  useLayoutEffect(() => {
+    let prevRestore: ScrollRestoration | undefined;
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      try {
+        prevRestore = window.history.scrollRestoration;
+        window.history.scrollRestoration = "manual";
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Jump to top immediately to avoid landing in the middle/bottom
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && prevRestore) {
+        try {
+          window.history.scrollRestoration = prevRestore;
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+  }, [id]);
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="font-serif text-3xl mb-4">Product not found</p>
-          <Link to="/products" className="text-rose-gold underline">Back to collection</Link>
+          <button onClick={() => navigate(-1)} className="text-rose-gold underline">Back to collection</button>
         </div>
       </div>
     );
   }
 
-  const related = products.filter((p) => p.id !== product.id).slice(0, 3);
+  const related = products.filter((p: Product) => p.id !== product.id).slice(0, 3);
   const gallery = product.images?.length ? product.images : [product.image];
   const mainImage = gallery[activeImage] ?? gallery[0];
 
@@ -53,9 +82,9 @@ const ProductDetail = () => {
     <>
       <section className="pt-32 pb-20">
         <div className="container">
-          <Link to="/products" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-rose-gold transition mb-12">
+          <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-rose-gold transition mb-12">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to collection
-          </Link>
+          </button>
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             {/* Image Gallery */}
@@ -65,6 +94,7 @@ const ProductDetail = () => {
                 className="relative aspect-square rounded-[2rem] overflow-hidden bg-blush/30 shadow-luxe cursor-zoom-in"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={() => setZoom((z) => ({ ...z, active: false }))}
+                onTouchStart={() => setZoom((z) => ({ ...z, active: false }))}
               >
                 <img
                   key={mainImage}
@@ -84,8 +114,8 @@ const ProductDetail = () => {
               </div>
 
               {/* Thumbnails */}
-              <div className="grid grid-cols-6 gap-3 mt-4">
-                {gallery.map((img, i) => (
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 mt-4">
+                {gallery.map((img: string, i: number) => (
                   <button
                     key={img + i}
                     onClick={() => setActiveImage(i)}
@@ -110,7 +140,7 @@ const ProductDetail = () => {
             {/* Details */}
             <div className="animate-fade-up">
               <p className="text-xs uppercase tracking-[0.3em] text-rose-gold mb-4">{product.category}</p>
-              <h1 className="font-serif text-5xl lg:text-6xl leading-[1] mb-5">{product.name}</h1>
+              <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl leading-[1] mb-5">{product.name}</h1>
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -126,7 +156,7 @@ const ProductDetail = () => {
               <div className="mb-10">
                 <p className="text-xs uppercase tracking-[0.25em] text-rose-gold mb-4">Benefits</p>
                 <ul className="space-y-3">
-                  {product.benefits.map((b) => (
+                  {product.benefits.map((b: string) => (
                     <li key={b} className="flex items-center gap-3 text-sm">
                       <span className="w-6 h-6 rounded-full gradient-rose flex items-center justify-center flex-shrink-0">
                         <Check className="w-3 h-3 text-primary-foreground" strokeWidth={2.5} />
@@ -164,7 +194,7 @@ const ProductDetail = () => {
               <div className="border-t border-border pt-8">
                 <p className="text-xs uppercase tracking-[0.25em] text-rose-gold mb-4">Key Ingredients</p>
                 <div className="flex flex-wrap gap-2">
-                  {product.ingredients.map((ing) => (
+                  {product.ingredients.map((ing: string) => (
                     <span key={ing} className="text-xs px-4 py-2 rounded-full bg-blush/40 border border-border/40">
                       {ing}
                     </span>
@@ -181,7 +211,7 @@ const ProductDetail = () => {
         <div className="container">
           <SectionTitle eyebrow="Reviews" title="What others are saying" />
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {reviews.map((r, i) => (
+            {reviews.map((r: { name: string; rating: number; text: string }, i: number) => (
               <div key={i} className="glass rounded-2xl p-8 shadow-card hover-lift">
                 <div className="flex mb-4">
                   {[...Array(r.rating)].map((_, k) => (
@@ -201,7 +231,7 @@ const ProductDetail = () => {
         <div className="container">
           <SectionTitle eyebrow="You may also love" title="Complete the ritual" />
           <div className="grid md:grid-cols-3 gap-8">
-            {related.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+            {related.map((p: Product, i: number) => <ProductCard key={p.id} product={p} index={i} />)}
           </div>
         </div>
       </section>

@@ -74,7 +74,7 @@ export const Navbar = () => {
           >
             <ShoppingBag className="w-5 h-5 text-foreground/80" />
             {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-gold text-primary-foreground text-[10px] font-medium flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 rounded-full bg-rose-gold text-primary-foreground text-[11px] font-medium flex items-center justify-center">
                 {totalItems}
               </span>
             )}

@@ -29,7 +29,7 @@ export const ProductCard = ({ product, index = 0 }: { product: Product; index?: 
     </div>
     <div className="flex items-baseline justify-between gap-4 px-1 pb-2">
       <div>
-        <h3 className="font-serif text-2xl leading-tight group-hover:text-rose-gold transition-colors duration-300">
+        <h3 className="font-serif text-xl sm:text-2xl leading-tight group-hover:text-rose-gold transition-colors duration-300">
           {product.name}
         </h3>
         <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{product.short}</p>

@@ -139,24 +139,9 @@ const Index = () => {
         <div className="container">
           <SectionTitle eyebrow="Voices" title="Loved by the considered" />
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => {
-              const r = useReveal<HTMLDivElement>();
-              return (
-                <div
-                  key={i}
-                  ref={r}
-                  className="reveal glass rounded-2xl p-8 shadow-card hover-lift"
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="text-rose-gold text-3xl font-serif leading-none mb-4">"</div>
-                  <p className="font-serif text-xl leading-relaxed mb-6">{t.text}</p>
-                  <div>
-                    <p className="text-sm font-medium">{t.name}</p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-rose-gold mt-1">{t.role}</p>
-                  </div>
-                </div>
-              );
-            })}
+            {testimonials.map((t, i) => (
+              <TestimonialCard key={i} testimonial={t} index={i} />
+            ))}
           </div>
         </div>
       </section>
@@ -185,6 +170,24 @@ const Index = () => {
         </div>
       </section>
     </>
+  );
+};
+
+const TestimonialCard = ({ testimonial, index }: { testimonial: typeof testimonials[0], index: number }) => {
+  const ref = useReveal<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      className="reveal glass rounded-2xl p-8 shadow-card hover-lift"
+      style={{ transitionDelay: `${index * 100}ms` }}
+    >
+      <div className="text-rose-gold text-3xl font-serif leading-none mb-4">"</div>
+      <p className="font-serif text-xl leading-relaxed mb-6">{testimonial.text}</p>
+      <div>
+        <p className="text-sm font-medium">{testimonial.name}</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-rose-gold mt-1">{testimonial.role}</p>
+      </div>
+    </div>
   );
 };
 

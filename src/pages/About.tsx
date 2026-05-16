@@ -1,5 +1,8 @@
 import founder from "@/assets/founder.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
+
+// Beautiful rose image for About section
+const roseImageUrl = "https://images.pexels.com/photos/14151108/pexels-photo-14151108.jpeg?auto=compress&cs=tinysrgb&w=800&h=1000&fit=crop";
 import { SectionTitle } from "@/components/SectionTitle";
 import { useReveal } from "@/hooks/use-reveal";
 import { Leaf, Sparkles, Heart, Award } from "lucide-react";
@@ -15,13 +18,16 @@ const About = () => {
   const ref1 = useReveal<HTMLDivElement>();
   const ref2 = useReveal<HTMLDivElement>();
 
+  const founderRef1 = useReveal<HTMLDivElement>();
+  const founderRef2 = useReveal<HTMLDivElement>();
+
   return (
     <>
       {/* Hero */}
       <section className="pt-40 pb-20 gradient-hero">
         <div className="container text-center max-w-3xl">
           <p className="text-xs uppercase tracking-[0.35em] text-rose-gold mb-6 animate-fade-up">Our Story</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[1] text-balance animate-fade-up">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-7xl leading-[1] text-balance animate-fade-up">
             A quieter kind of beauty.
           </h1>
           <p className="mt-8 text-lg text-muted-foreground leading-relaxed animate-fade-up">
@@ -52,7 +58,15 @@ const About = () => {
           </div>
           <div ref={ref2} className="reveal relative">
             <div className="absolute -inset-8 bg-blush/40 rounded-full blur-3xl" />
-            <img src={gallery2} alt="Pink rose macro" loading="lazy" className="relative rounded-3xl shadow-luxe aspect-[4/5] object-cover" />
+            <img 
+              src={roseImageUrl} 
+              alt="Pink rose macro" 
+              loading="lazy" 
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = gallery2;
+              }}
+              className="relative rounded-3xl shadow-luxe aspect-[4/5] object-cover" 
+            />
           </div>
         </div>
       </section>
@@ -83,23 +97,9 @@ const About = () => {
         <div className="container">
           <SectionTitle eyebrow="Our Values" title="Crafted with conscience" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((v, i) => {
-              const r = useReveal<HTMLDivElement>();
-              return (
-                <div
-                  key={i}
-                  ref={r}
-                  className="reveal text-center p-8 hover-lift rounded-2xl"
-                  style={{ transitionDelay: `${i * 80}ms` }}
-                >
-                  <div className="w-14 h-14 rounded-full gradient-rose flex items-center justify-center mx-auto mb-5">
-                    <v.icon className="w-6 h-6 text-primary-foreground" strokeWidth={1.3} />
-                  </div>
-                  <h3 className="font-serif text-2xl mb-3">{v.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{v.text}</p>
-                </div>
-              );
-            })}
+            {values.map((v, i) => (
+              <ValueCard key={i} value={v} index={i} />
+            ))}
           </div>
         </div>
       </section>
@@ -107,13 +107,13 @@ const About = () => {
       {/* Founder */}
       <section className="py-24 bg-beige/40">
         <div className="container grid lg:grid-cols-5 gap-16 items-center">
-          <div className="lg:col-span-2 reveal" ref={useReveal<HTMLDivElement>()}>
+          <div className="lg:col-span-2 reveal" ref={founderRef1}>
             <div className="relative">
               <div className="absolute -inset-6 bg-rose-gold/10 rounded-full blur-2xl" />
               <img src={founder} alt="Camille Laurent, founder" loading="lazy" className="relative rounded-3xl shadow-luxe aspect-[4/5] object-cover" />
             </div>
           </div>
-          <div className="lg:col-span-3 reveal" ref={useReveal<HTMLDivElement>()}>
+          <div className="lg:col-span-3 reveal" ref={founderRef2}>
             <p className="text-xs uppercase tracking-[0.35em] text-rose-gold mb-5">Founder</p>
             <h2 className="font-serif text-4xl md:text-5xl mb-3 leading-tight">Camille Laurent</h2>
             <p className="text-rose-gold italic font-serif text-xl mb-8">"Beauty is the patience of small daily rituals."</p>
@@ -129,6 +129,23 @@ const About = () => {
         </div>
       </section>
     </>
+  );
+};
+
+const ValueCard = ({ value, index }: { value: typeof values[0], index: number }) => {
+  const ref = useReveal<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      className="reveal text-center p-8 hover-lift rounded-2xl"
+      style={{ transitionDelay: `${index * 80}ms` }}
+    >
+      <div className="w-14 h-14 rounded-full gradient-rose flex items-center justify-center mx-auto mb-5">
+        <value.icon className="w-6 h-6 text-primary-foreground" strokeWidth={1.3} />
+      </div>
+      <h3 className="font-serif text-2xl mb-3">{value.title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{value.text}</p>
+    </div>
   );
 };
 
