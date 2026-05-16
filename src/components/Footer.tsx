@@ -23,18 +23,21 @@ export const Footer = () => {
         <p className="text-muted-foreground max-w-md mx-auto mb-8">
           Receive rituals, new launches and private invitations — softly, never often.
         </p>
-        <form onSubmit={subscribe} className="flex max-w-md mx-auto glass rounded-full p-1.5 shadow-soft">
+        <form
+          onSubmit={subscribe}
+          className="flex flex-col sm:flex-row gap-3 w-full sm:max-w-md mx-auto glass rounded-lg sm:rounded-full p-1 overflow-hidden"
+        >
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
-            className="flex-1 bg-transparent px-5 py-3 text-sm outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent px-4 py-2 sm:px-5 sm:py-3 text-sm outline-none placeholder:text-muted-foreground w-full transition-shadow duration-300 focus:ring-2 focus:ring-rose-gold/20 focus:shadow-soft"
           />
           <button
             type="submit"
-            className="gradient-rose text-primary-foreground px-6 py-3 rounded-full text-xs uppercase tracking-[0.2em] hover:opacity-90 transition-all duration-500"
+            className="gradient-rose text-primary-foreground px-4 py-2 sm:px-6 sm:py-3 rounded-full text-xs uppercase tracking-[0.2em] hover:opacity-95 transition transform duration-300 hover:scale-[1.02] focus:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-rose-gold/20 w-full sm:w-auto"
           >
             Subscribe
           </button>
